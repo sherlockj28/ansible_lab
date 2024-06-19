@@ -1,0 +1,116 @@
+ansible setup/stuff
+
+ansible uses Openssh to do provisioning
+
+ssh keys are optional but recommended
+
+1. Make sure openssh is installed on the work station (control) and servers.  it is OPTIONAL and not default on servers.
+Once openssh has been installed on all servers, connect to each one via ssh. if you don't ansible can't connect.
+
+2. create ssh key pair - not required but highly recommended.  strengthens ssh connection.
+ssh-keygen -t ed25519 -C "john default"
+(pw = Alph...)
+
+
+3. copy key to each server
+ssh-copy-id -i ~/<key> <ip of server>
+
+4. create specific key for ansible, copy to each server as well.
+ssh-keygen -t ed25519 -C "ansible"
+ohn@acheron:~$ ssh-keygen -t ed25519 -C "ansible"
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/john/.ssh/id_ed25519): /home/john/.ssh/ansible
+NO PASSWD
+
+connect with specific key to check it works:
+
+ssh -i ~/.ssh/ansible <server ip>
+
+cheat.... run below line in terminal
+john@acheron:~$ eval $(ssh-agent)
+Agent pid 164784 #changes
+john@acheron:~$ssh-add
+Enter passphrase for /home/john/.ssh/id_ed25519: #password for the key
+
+Identity added: /home/john/.ssh/id_ed25519 (john ed25519 default)
+
+It drops you in the ssh session.  Not permanent, if you close the term window, that ssh-agent session is done.  It only lasts for the life of the terminal window.
+you can also...
+
+john@acheron:~$alias ssha='eval $(ssh-agent) && ssh-add'
+#so now enter 'ssha' in terminal, it will ask for the key/password and generate the PID
+~$nano .bashrc
+add it like it was typed out below the aliases for ls, ll, etc.
+
+5. git repository for ansible version control
+see git stuff****** as of 2020, new repositories are creatd in main, not master, so 'git push origin main'
+
+Git has three main states that your files can reside in: modified, staged, and committed:
+
+    Modified means that you have changed the file but have not committed it to your database yet.
+
+    Staged means that you have marked a modified file in its current version to go into your next commit snapshot.
+
+    Committed means that the data is safely stored in your local database.
+
+The basic Git workflow goes something like this:
+
+    You modify files in your working tree.
+
+    You selectively stage just those changes you want to be part of your next commit, which adds only those changes to the staging area.
+
+    You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
+
+Commands related to a remote repository:
+git clone git@github.com:USER-NAME/REPOSITORY-NAME.git or git clone https://github.com/user-name/repository-name.git
+git push origin main
+Commands related to workflow:
+git add .
+git commit -m "A message describing what you have done to make this snapshot different"
+Commands related to checking status or log history
+git status
+git log
+
+The basic Git syntax is program | action | destination.
+
+For example,
+
+git add . is read as git | add | ., where the period represents everything in the current directory;
+git commit -m "message" is read as git | commit -m | "message"; and
+git status is read as git | status | (no destination).
+
+
+
+6. installing ansible - control node only unless using the push model <-- not recommended
+
+7. create ansible.cfg file:
+looks like...
+
+[defaults]
+inventory = inventory.ini
+private_key_file = ~/.ssh/ansible
+
+helpful command to gather all info about the hosts:
+
+john@acheron:~/ansible_lab$ ansible all -m gather_facts
+(super long output...)
+
+on a specific host (based off of IP)
+john@acheron:~/ansible_lab$ ansible all -m gather_facts --limit 192.168.122.90
+
+8. ad-hoc commands with elevated priv
+
+ansible all -m apt/yum/rypper -a update_cache=true --become --ask-become-pass
+
+ansible-playbook --ask-become-pass install_apache.yml 
+
+
+
+
+
+
+
+
+
+
+
