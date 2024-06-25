@@ -10,18 +10,13 @@
     when: ansible_distribution in ["Debian", "Ubuntu"]
 
 
-  - name: install apache2 package
+  - name: install apache2 and php packages for Ubuntu
     apt:
-      name: apache2
+      name: 
+        - apache2
+        - libapache2-mod-php
       state: latest
     when: ansible_distribution in ["Debian", "Ubuntu"]
-
-  - name: add php support for apache
-    apt:
-      name: libapache2-mod-php
-      state: latest
-    when: ansible_distribution in ["Debian", "Ubuntu"]
-
 
   - name: update repository index
     dnf:
@@ -29,16 +24,13 @@
     when: ansible_distribution == "Red Hat"
 
 
-  - name: install apache2 package
+  - name: install httpd and hph packages
     dnf:
-      name: apache2
+      name:
+        - httpd
+        - php
       state: latest
     when: ansible_distribution == "Red Hat"
 
-  - name: add php support for apache
-    dnf:
-      name: libapache2-mod-php
-      state: latest
-    when: ansible_distribution == "Red Hat"
 
 
