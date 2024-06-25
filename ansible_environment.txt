@@ -4,13 +4,15 @@ rhel: 192.168.122.180
 ssh - yes
 key from control? - yes
 
-opensuse: 192.168.122.90
-ssh - yes
-key from control? - yes
-
 ubuntu: 192.168.122.98
 ssh - yes
 key from control? - yes
+
+ubuntu2: 192.168.122.184
+ssh - yes
+key from control? yes
+
+
 
 
 
